@@ -3,47 +3,45 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import 'add_edit_reminder_screen.dart';
+import 'weight_tracker_screen.dart';
+// import 'bmi_calculator_screen.dart'; // Make sure this exists
 import '../services/auth_service.dart';
 
-class HomeScreen extends StatelessWidget {
-  HomeScreen({Key? key}) : super(key: key);
+class HomeScreen extends StatefulWidget {
+  const HomeScreen({Key? key}) : super(key: key);
 
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
   final authService = AuthService();
-  final user = FirebaseAuth.instance.currentUser;
+  int _selectedIndex = 0;
 
   @override
   Widget build(BuildContext context) {
+    final user = FirebaseAuth.instance.currentUser;
+
     if (user == null) {
-      // If somehow user is null, redirect to login (or handle gracefully)
-      return Scaffold(
+      return const Scaffold(
         body: Center(child: Text('User not logged in')),
       );
     }
 
     final remindersQuery = FirebaseFirestore.instance
         .collection('medication_reminders')
-        .where('userId', isEqualTo: user!.uid)
-        .orderBy('time'); // sort by time
+        .where('userId', isEqualTo: user.uid)
+        .orderBy('time');
 
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('MediRemind Home'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.logout),
-            onPressed: () async {
-              await authService.signOut();
-              Navigator.of(context).pushReplacementNamed('/');
-            },
-          ),
-        ],
-      ),
-      body: StreamBuilder<QuerySnapshot>(
+    final List<Widget> pages = [
+      // Reminder Page
+      StreamBuilder<QuerySnapshot>(
         stream: remindersQuery.snapshots(),
         builder: (context, snapshot) {
           if (snapshot.hasError) {
-            return Center(child: Text('Error loading reminders: ${snapshot.error}'));
+            return Center(child: Text('Error: ${snapshot.error}'));
           }
+
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
           }
@@ -100,7 +98,10 @@ class HomeScreen extends StatelessWidget {
                           ),
                         );
                         if (confirmed == true) {
-                          await FirebaseFirestore.instance.collection('medication_reminders').doc(doc.id).delete();
+                          await FirebaseFirestore.instance
+                              .collection('medication_reminders')
+                              .doc(doc.id)
+                              .delete();
                         }
                       },
                     ),
@@ -111,15 +112,56 @@ class HomeScreen extends StatelessWidget {
           );
         },
       ),
-      floatingActionButton: FloatingActionButton(
+
+      // Weight Tracker Page
+      const WeightTrackerScreen(),
+
+      // BMI Calculator Page
+      //const BMICalculatorScreen(),
+    ];
+
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('MediRemind'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.logout),
+            onPressed: () async {
+              await authService.signOut();
+              Navigator.of(context).pushReplacementNamed('/');
+            },
+          ),
+        ],
+      ),
+      body: pages[_selectedIndex],
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: _selectedIndex,
+        onTap: (index) {
+          setState(() {
+            _selectedIndex = index;
+          });
+        },
+        items: const [
+          BottomNavigationBarItem(
+              icon: Icon(Icons.medication), label: 'Reminders'),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.monitor_weight), label: 'Weight Tracker'),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.accessibility), label: 'BMI Calculator'),
+        ],
+      ),
+      floatingActionButton: _selectedIndex == 0
+          ? FloatingActionButton(
         child: const Icon(Icons.add),
         onPressed: () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (_) => const AddEditReminderScreen()),
+            MaterialPageRoute(
+                builder: (_) => const AddEditReminderScreen()),
           );
         },
-      ),
+      )
+          : null,
     );
   }
 }
