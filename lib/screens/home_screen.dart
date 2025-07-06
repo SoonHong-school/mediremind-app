@@ -3,14 +3,11 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import 'add_edit_reminder_screen.dart';
-<<<<<<< Updated upstream
 import 'weight_tracker_screen.dart';
 // import 'bmi_calculator_screen.dart'; // Make sure this exists
-=======
 import 'medication_history_screen.dart';
 import 'bmi_calculator_screen.dart';
 import 'weight_tracker_screen.dart';
->>>>>>> Stashed changes
 import '../services/auth_service.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -40,11 +37,6 @@ class _HomeScreenState extends State<HomeScreen> {
         .orderBy('time');
 
     final List<Widget> pages = [
-<<<<<<< Updated upstream
-      // Reminder Page
-=======
-      // Reminders Page
->>>>>>> Stashed changes
       StreamBuilder<QuerySnapshot>(
         stream: remindersQuery.snapshots(),
         builder: (context, snapshot) {
@@ -181,13 +173,6 @@ class _HomeScreenState extends State<HomeScreen> {
         },
       ),
 
-<<<<<<< Updated upstream
-      // Weight Tracker Page
-      const WeightTrackerScreen(),
-
-      // BMI Calculator Page
-      //const BMICalculatorScreen(),
-=======
       // Weight Tracker
       const WeightTrackerScreen(),
 
@@ -196,7 +181,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
       // Medication History
       const MedicationHistoryScreen(),
->>>>>>> Stashed changes
     ];
 
     return Scaffold(
@@ -215,10 +199,9 @@ class _HomeScreenState extends State<HomeScreen> {
       body: pages[_selectedIndex],
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _selectedIndex,
-<<<<<<< Updated upstream
-=======
+
         type: BottomNavigationBarType.fixed, // Important for 4+ items
->>>>>>> Stashed changes
+
         onTap: (index) {
           setState(() {
             _selectedIndex = index;
@@ -231,11 +214,8 @@ class _HomeScreenState extends State<HomeScreen> {
               icon: Icon(Icons.monitor_weight), label: 'Weight Tracker'),
           BottomNavigationBarItem(
               icon: Icon(Icons.accessibility), label: 'BMI Calculator'),
-<<<<<<< Updated upstream
-=======
           BottomNavigationBarItem(
               icon: Icon(Icons.history), label: 'History'),
->>>>>>> Stashed changes
         ],
       ),
       floatingActionButton: _selectedIndex == 0

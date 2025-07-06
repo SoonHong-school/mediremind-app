@@ -81,12 +81,7 @@ class _WeightTrackerScreenState extends State<WeightTrackerScreen> {
                       return ListTile(
                         leading: const Icon(Icons.monitor_weight),
                         title: Text("$weight kg"),
-<<<<<<< Updated upstream
                         subtitle: Text('${timestamp.day}/${timestamp.month}/${timestamp.year} ${timestamp.hour}:${timestamp.minute.toString().padLeft(2, '0')}'),
-=======
-                        subtitle: Text(
-                          '${timestamp.day}/${timestamp.month}/${timestamp.year} ${timestamp.hour}:${timestamp.minute.toString().padLeft(2, '0')}',
-                        ),
                         trailing: IconButton(
                           icon: const Icon(Icons.delete, color: Colors.red),
                           onPressed: () async {
@@ -111,7 +106,6 @@ class _WeightTrackerScreenState extends State<WeightTrackerScreen> {
                             }
                           },
                         ),
->>>>>>> Stashed changes
                       );
                     }).toList(),
                   );
