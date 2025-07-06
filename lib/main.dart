@@ -39,10 +39,23 @@ Future<void> main() async {
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
   tz.initializeTimeZones();
+<<<<<<< Updated upstream
   await requestNotificationPermission();
 
   const AndroidInitializationSettings initializationSettingsAndroid = AndroidInitializationSettings('@mipmap/ic_launcher');
   const InitializationSettings initializationSettings = InitializationSettings(android: initializationSettingsAndroid);
+=======
+
+  await requestNotificationPermission();
+
+  const AndroidInitializationSettings initializationSettingsAndroid =
+  AndroidInitializationSettings('@mipmap/ic_launcher');
+
+  const InitializationSettings initializationSettings = InitializationSettings(
+    android: initializationSettingsAndroid,
+  );
+
+>>>>>>> Stashed changes
   await flutterLocalNotificationsPlugin.initialize(initializationSettings);
 
   runApp(const MediRemindApp());

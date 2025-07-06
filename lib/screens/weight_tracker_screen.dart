@@ -81,7 +81,37 @@ class _WeightTrackerScreenState extends State<WeightTrackerScreen> {
                       return ListTile(
                         leading: const Icon(Icons.monitor_weight),
                         title: Text("$weight kg"),
+<<<<<<< Updated upstream
                         subtitle: Text('${timestamp.day}/${timestamp.month}/${timestamp.year} ${timestamp.hour}:${timestamp.minute.toString().padLeft(2, '0')}'),
+=======
+                        subtitle: Text(
+                          '${timestamp.day}/${timestamp.month}/${timestamp.year} ${timestamp.hour}:${timestamp.minute.toString().padLeft(2, '0')}',
+                        ),
+                        trailing: IconButton(
+                          icon: const Icon(Icons.delete, color: Colors.red),
+                          onPressed: () async {
+                            final confirm = await showDialog<bool>(
+                              context: context,
+                              builder: (context) => AlertDialog(
+                                title: const Text("Delete Entry"),
+                                content: const Text("Are you sure you want to delete this weight entry?"),
+                                actions: [
+                                  TextButton(
+                                      onPressed: () => Navigator.pop(context, false),
+                                      child: const Text("Cancel")),
+                                  TextButton(
+                                      onPressed: () => Navigator.pop(context, true),
+                                      child: const Text("Delete")),
+                                ],
+                              ),
+                            );
+
+                            if (confirm == true) {
+                              await _weightRef.doc(doc.id).delete();
+                            }
+                          },
+                        ),
+>>>>>>> Stashed changes
                       );
                     }).toList(),
                   );

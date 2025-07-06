@@ -3,8 +3,14 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import 'add_edit_reminder_screen.dart';
+<<<<<<< Updated upstream
 import 'weight_tracker_screen.dart';
 // import 'bmi_calculator_screen.dart'; // Make sure this exists
+=======
+import 'medication_history_screen.dart';
+import 'bmi_calculator_screen.dart';
+import 'weight_tracker_screen.dart';
+>>>>>>> Stashed changes
 import '../services/auth_service.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -34,7 +40,11 @@ class _HomeScreenState extends State<HomeScreen> {
         .orderBy('time');
 
     final List<Widget> pages = [
+<<<<<<< Updated upstream
       // Reminder Page
+=======
+      // Reminders Page
+>>>>>>> Stashed changes
       StreamBuilder<QuerySnapshot>(
         stream: remindersQuery.snapshots(),
         builder: (context, snapshot) {
@@ -47,7 +57,6 @@ class _HomeScreenState extends State<HomeScreen> {
           }
 
           final docs = snapshot.data?.docs ?? [];
-
           if (docs.isEmpty) {
             return const Center(child: Text('No medication reminders yet.'));
           }
@@ -73,12 +82,64 @@ class _HomeScreenState extends State<HomeScreen> {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     IconButton(
+                      icon: const Icon(Icons.check, color: Colors.green),
+                      onPressed: () async {
+                        final confirmed = await showDialog<bool>(
+                          context: context,
+                          builder: (_) => AlertDialog(
+                            title: const Text('Mark as Taken'),
+                            content: const Text(
+                                'Do you want to mark this medication as taken?'),
+                            actions: [
+                              TextButton(
+                                onPressed: () =>
+                                    Navigator.pop(context, false),
+                                child: const Text('Cancel'),
+                              ),
+                              TextButton(
+                                onPressed: () =>
+                                    Navigator.pop(context, true),
+                                child: const Text('Mark as Taken'),
+                              ),
+                            ],
+                          ),
+                        );
+                        if (confirmed == true) {
+                          final userId =
+                              FirebaseAuth.instance.currentUser?.uid;
+                          if (userId != null) {
+                            await FirebaseFirestore.instance
+                                .collection('medication_logs')
+                                .add({
+                              'userId': userId,
+                              'name': name,
+                              'dosage': dosage,
+                              'status': 'Taken',
+                              'timeTaken': Timestamp.now(),
+                            });
+
+                            await FirebaseFirestore.instance
+                                .collection('medication_reminders')
+                                .doc(doc.id)
+                                .delete();
+
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('Marked as taken and deleted'),
+                              ),
+                            );
+                          }
+                        }
+                      },
+                    ),
+                    IconButton(
                       icon: const Icon(Icons.edit, color: Colors.blue),
                       onPressed: () {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (_) => AddEditReminderScreen(doc: doc),
+                            builder: (_) =>
+                                AddEditReminderScreen(doc: doc),
                           ),
                         );
                       },
@@ -90,10 +151,17 @@ class _HomeScreenState extends State<HomeScreen> {
                           context: context,
                           builder: (_) => AlertDialog(
                             title: const Text('Delete Reminder'),
-                            content: const Text('Are you sure you want to delete this reminder?'),
+                            content: const Text(
+                                'Are you sure you want to delete this reminder?'),
                             actions: [
-                              TextButton(onPressed: () => Navigator.pop(context, false), child: const Text('Cancel')),
-                              TextButton(onPressed: () => Navigator.pop(context, true), child: const Text('Delete')),
+                              TextButton(
+                                  onPressed: () =>
+                                      Navigator.pop(context, false),
+                                  child: const Text('Cancel')),
+                              TextButton(
+                                  onPressed: () =>
+                                      Navigator.pop(context, true),
+                                  child: const Text('Delete')),
                             ],
                           ),
                         );
@@ -113,11 +181,22 @@ class _HomeScreenState extends State<HomeScreen> {
         },
       ),
 
+<<<<<<< Updated upstream
       // Weight Tracker Page
       const WeightTrackerScreen(),
 
       // BMI Calculator Page
       //const BMICalculatorScreen(),
+=======
+      // Weight Tracker
+      const WeightTrackerScreen(),
+
+      // BMI Calculator
+      const BMICalculatorScreen(),
+
+      // Medication History
+      const MedicationHistoryScreen(),
+>>>>>>> Stashed changes
     ];
 
     return Scaffold(
@@ -136,6 +215,10 @@ class _HomeScreenState extends State<HomeScreen> {
       body: pages[_selectedIndex],
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _selectedIndex,
+<<<<<<< Updated upstream
+=======
+        type: BottomNavigationBarType.fixed, // Important for 4+ items
+>>>>>>> Stashed changes
         onTap: (index) {
           setState(() {
             _selectedIndex = index;
@@ -148,6 +231,11 @@ class _HomeScreenState extends State<HomeScreen> {
               icon: Icon(Icons.monitor_weight), label: 'Weight Tracker'),
           BottomNavigationBarItem(
               icon: Icon(Icons.accessibility), label: 'BMI Calculator'),
+<<<<<<< Updated upstream
+=======
+          BottomNavigationBarItem(
+              icon: Icon(Icons.history), label: 'History'),
+>>>>>>> Stashed changes
         ],
       ),
       floatingActionButton: _selectedIndex == 0
